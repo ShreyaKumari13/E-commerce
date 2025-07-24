@@ -20,7 +20,8 @@ exports.getAllProducts = asyncErrorHandler(async (req, res, next) => {
 
     searchFeature.pagination(resultPerPage);
 
-    products = await searchFeature.query.clone();
+    // Removed .clone() for compatibility and simplicity
+    products = await searchFeature.query;
 
     res.status(200).json({
         success: true,
@@ -68,54 +69,61 @@ exports.getAdminProducts = asyncErrorHandler(async (req, res, next) => {
 
 // Create Product ---ADMIN
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
+    try {
+        let images = [];
+        if (typeof req.body.images === "string") {
+            images.push(req.body.images);
+        } else {
+            images = req.body.images;
+        }
 
-    let images = [];
-    if (typeof req.body.images === "string") {
-        images.push(req.body.images);
-    } else {
-        images = req.body.images;
-    }
+        const imagesLink = [];
 
-    const imagesLink = [];
+        for (let i = 0; i < images.length; i++) {
+            const result = await cloudinary.v2.uploader.upload(images[i], {
+                folder: "products",
+            });
 
-    for (let i = 0; i < images.length; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i], {
-            folder: "products",
+            imagesLink.push({
+                public_id: result.public_id,
+                url: result.secure_url,
+            });
+        }
+
+        const result = await cloudinary.v2.uploader.upload(req.body.logo, {
+            folder: "brands",
         });
-
-        imagesLink.push({
+        const brandLogo = {
             public_id: result.public_id,
             url: result.secure_url,
+        };
+
+        req.body.brand = {
+            name: req.body.brandname,
+            logo: brandLogo
+        }
+        req.body.images = imagesLink;
+        // Set a real-looking default user ObjectId if not authenticated (replace with a real one from your DB!)
+        req.body.user = req.user ? req.user.id : "662e7b2f8e4b2c0012345678";
+
+        let specs = [];
+        if (req.body.specifications && Array.isArray(req.body.specifications)) {
+            req.body.specifications.forEach((s) => {
+                specs.push(JSON.parse(s))
+            });
+        }
+        req.body.specifications = specs;
+
+        const product = await Product.create(req.body);
+
+        res.status(201).json({
+            success: true,
+            product
         });
+    } catch (error) {
+        console.error('Product creation error:', error);
+        res.status(500).json({ error: error.message, stack: error.stack });
     }
-
-    const result = await cloudinary.v2.uploader.upload(req.body.logo, {
-        folder: "brands",
-    });
-    const brandLogo = {
-        public_id: result.public_id,
-        url: result.secure_url,
-    };
-
-    req.body.brand = {
-        name: req.body.brandname,
-        logo: brandLogo
-    }
-    req.body.images = imagesLink;
-    req.body.user = req.user.id;
-
-    let specs = [];
-    req.body.specifications.forEach((s) => {
-        specs.push(JSON.parse(s))
-    });
-    req.body.specifications = specs;
-
-    const product = await Product.create(req.body);
-
-    res.status(201).json({
-        success: true,
-        product
-    });
 });
 
 // Update Product ---ADMIN

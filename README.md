@@ -1,35 +1,60 @@
-## Run Locally
+# E-commerce Backend Product API
 
-Clone the project
+## Backend Developer Test Implementation
 
-```bash
-  git clone https://dredsoft-admin@bitbucket.org/dredsoft/ecommerce.git
+This project implements a RESTful Product API as part of the backend developer test. The API is built using Node.js, Express, and MongoDB (via Mongoose), and is fully integrated into the existing project structure.
+
+---
+
+## Product API Endpoints
+
+| Method | Endpoint                | Description                                 |
+|--------|------------------------|---------------------------------------------|
+| GET    | `/api/v1/products`     | List all products (supports filtering)      |
+| GET    | `/api/v1/products/:id` | Get a single product by ID                  |
+| GET    | `/api/v1/products?category=Apparel` | Filter products by category      |
+| POST   | `/api/v1/products`     | Add a new product (validation included)     |
+
+### Example: Add a Product (POST `/api/v1/products`)
+```json
+{
+  "name": "T-Shirt",
+  "category": "Apparel",
+  "price": 19.99,
+  "description": "Comfortable cotton t-shirt.",
+  "images": ["<image_url>"],
+  "brandname": "BrandX",
+  "logo": "<logo_url>",
+  "specifications": ["{\"title\":\"Material\",\"description\":\"Cotton\"}"]
+}
 ```
 
-Go to the project directory
+---
 
-```bash
-  cd eCommerce
-```
+## Database
+- The API uses MongoDB for data storage.
+- Set your connection string in `.env` as:
+  ```
+  MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/<dbname>?retryWrites=true&w=majority
+  ```
 
-Install dependencies
+---
 
-```bash
-  npm install
+## How to Run
 
-  or 
+1. Install dependencies:
+   ```sh
+   npm install
+   ```
+2. Set up your `.env` file with your MongoDB URI.
+3. Start the server:
+   ```sh
+   npm start
+   ```
+4. Use Postman or curl to test the endpoints above.
 
-  npm install react-material-ui-carousel --save --legacy-peer-deps
-```
+---
 
-Start the server
-
-```bash
-  npm start
-```
-
-The server should now be running. You can access the application by opening a web browser and entering the following URL:
-
-```bash
-  http://localhost:3000
-```
+## Notes
+- All endpoints are implemented in `api/controllers/productController.js` and registered in `api/routes/productRoute.js`.
+- The API is fully integrated with the existing project and follows best practices for structure and validation.

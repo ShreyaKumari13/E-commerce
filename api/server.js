@@ -9,7 +9,8 @@ process.on('uncaughtException', (err) => {
     process.exit(1);
 });
 
-// connectDatabase();
+console.log('Connecting to MongoDB...');
+connectDatabase();
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,

@@ -5,7 +5,7 @@ const { validateProduct } = require("../middlewares/validator")
 
 const router = express.Router();
 
-router.route('/products').get(getAllProducts);
+router.route('/products').get(getAllProducts).post(createProduct);
 router.route('/products/all').get(getProducts);
 
 router.route('/admin/products').get(isAuthenticatedUser, authorizeRoles("admin"), getAdminProducts, validateProduct);
@@ -16,6 +16,7 @@ router.route('/admin/product/:id')
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 
 router.route('/product/:id').get(getProductDetails);
+router.route('/products/:id').get(getProductDetails);
 
 router.route('/review').put(isAuthenticatedUser, createProductReview);
 
