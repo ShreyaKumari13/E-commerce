@@ -6,30 +6,34 @@ const cloudinary = require('cloudinary');
 
 // Get All Products
 exports.getAllProducts = asyncErrorHandler(async (req, res, next) => {
+    try {
+        const resultPerPage = 12;
+        const productsCount = await Product.countDocuments();
+        // console.log(req.query);
 
-    const resultPerPage = 12;
-    const productsCount = await Product.countDocuments();
-    // console.log(req.query);
+        const searchFeature = new SearchFeatures(Product.find(), req.query)
+            .search()
+            .filter();
 
-    const searchFeature = new SearchFeatures(Product.find(), req.query)
-        .search()
-        .filter();
+        let products = await searchFeature.query;
+        let filteredProductsCount = products.length;
 
-    let products = await searchFeature.query;
-    let filteredProductsCount = products.length;
+        searchFeature.pagination(resultPerPage);
 
-    searchFeature.pagination(resultPerPage);
+        // Removed .clone() for compatibility and simplicity
+        products = await searchFeature.query;
 
-    // Removed .clone() for compatibility and simplicity
-    products = await searchFeature.query;
-
-    res.status(200).json({
-        success: true,
-        products,
-        productsCount,
-        resultPerPage,
-        filteredProductsCount,
-    });
+        res.status(200).json({
+            success: true,
+            products,
+            productsCount,
+            resultPerPage,
+            filteredProductsCount,
+        });
+    } catch (error) {
+        console.error('getAllProducts error:', error);
+        res.status(500).json({ error: error.message, stack: error.stack });
+    }
 });
 
 // Get All Products ---Product Sliders
