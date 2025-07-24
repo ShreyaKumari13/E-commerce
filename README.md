@@ -1,60 +1,104 @@
 # E-commerce Backend Product API
 
-## Backend Developer Test Implementation
+## Deployed API
 
-This project implements a RESTful Product API as part of the backend developer test. The API is built using Node.js, Express, and MongoDB (via Mongoose), and is fully integrated into the existing project structure.
-
----
-
-## Product API Endpoints
-
-| Method | Endpoint                | Description                                 |
-|--------|------------------------|---------------------------------------------|
-| GET    | `/api/v1/products`     | List all products (supports filtering)      |
-| GET    | `/api/v1/products/:id` | Get a single product by ID                  |
-| GET    | `/api/v1/products?category=Apparel` | Filter products by category      |
-| POST   | `/api/v1/products`     | Add a new product (validation included)     |
-
-### Example: Add a Product (POST `/api/v1/products`)
-```json
-{
-  "name": "T-Shirt",
-  "category": "Apparel",
-  "price": 19.99,
-  "description": "Comfortable cotton t-shirt.",
-  "images": ["<image_url>"],
-  "brandname": "BrandX",
-  "logo": "<logo_url>",
-  "specifications": ["{\"title\":\"Material\",\"description\":\"Cotton\"}"]
-}
-```
+- **Base URL:** [https://e-commerce-6b67.onrender.com](https://e-commerce-6b67.onrender.com)
 
 ---
 
-## Database
-- The API uses MongoDB for data storage.
-- Set your connection string in `.env` as:
-  ```
-  MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/<dbname>?retryWrites=true&w=majority
-  ```
+## Tech Stack
+- **Node.js**
+- **Express.js**
+- **MongoDB (Atlas) with Mongoose**
+- **Cloudinary (for image uploads)**
 
 ---
 
-## How to Run
+## How to Run the Project Locally
 
-1. Install dependencies:
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/ShreyaKumari13/E-commerce.git
+   cd E-commerce
+   ```
+2. Install dependencies:
    ```sh
    npm install
    ```
-2. Set up your `.env` file with your MongoDB URI.
-3. Start the server:
+3. Set up your `.env` file with the following variables:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   CLOUDINARY_NAME=your_cloudinary_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   ```
+4. Start the server:
    ```sh
    npm start
    ```
-4. Use Postman or curl to test the endpoints above.
+5. The API will be available at `http://localhost:4000` by default.
 
 ---
 
-## Notes
-- All endpoints are implemented in `api/controllers/productController.js` and registered in `api/routes/productRoute.js`.
-- The API is fully integrated with the existing project and follows best practices for structure and validation.
+## API Documentation
+
+### Base URL
+- Local: `http://localhost:4000/api/v1`
+- Deployed: `https://e-commerce-6b67.onrender.com/api/v1`
+
+### Endpoints
+
+#### 1. Get All Products
+- **GET** `/products`
+- **Description:** Returns a list of all products.
+- **Example:**
+  ```sh
+  curl https://e-commerce-6b67.onrender.com/api/v1/products
+  ```
+
+#### 2. Get Product by ID
+- **GET** `/products/:id`
+- **Description:** Returns a single product by its ID.
+- **Example:**
+  ```sh
+  curl https://e-commerce-6b67.onrender.com/api/v1/products/<product_id>
+  ```
+
+#### 3. Filter Products by Category
+- **GET** `/products?category=Apparel`
+- **Description:** Returns products filtered by category.
+- **Example:**
+  ```sh
+  curl "https://e-commerce-6b67.onrender.com/api/v1/products?category=Apparel"
+  ```
+
+#### 4. Add a New Product
+- **POST** `/products`
+- **Description:** Adds a new product (data validation required).
+- **Example (curl):**
+  ```sh
+  curl -X POST https://e-commerce-6b67.onrender.com/api/v1/products \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "Sneakers",
+      "category": "Footwear",
+      "price": 49.99,
+      "cuttedPrice": 59.99,
+      "description": "Lightweight and comfortable running sneakers.",
+      "images": ["https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg"],
+      "brandname": "RunnerPro",
+      "logo": "https://images.pexels.com/photos/936094/pexels-photo-936094.jpeg",
+      "specifications": [
+        "{\"title\":\"Material\",\"description\":\"Mesh and Rubber\"}",
+        "{\"title\":\"Color\",\"description\":\"Black/White\"}"
+      ]
+    }'
+  ```
+
+---
+
+## Brief Note
+
+- **Tech Stack:** Node.js, Express.js, MongoDB (Atlas), Mongoose, Cloudinary
+- **How to Run:** Clone the repo, install dependencies, set up your `.env`, and run `npm start`.
+- **API Documentation:** See above for endpoints and sample requests. The API is also deployed at [https://e-commerce-6b67.onrender.com](https://e-commerce-6b67.onrender.com).
